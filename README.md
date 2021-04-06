@@ -9,3 +9,5 @@
  
  <br>
  <img src="https://github.com/cagataybalikci/Python-Password-Generator-App/blob/bab6fd2464850aa5f5c69acd50bcade393149378/images/password_generator.gif" width="500" height="500">
+ <br>
+ Logo taken from [this site.](https://www.flaticon.com/)
