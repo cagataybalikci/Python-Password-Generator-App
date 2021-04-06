@@ -1,5 +1,7 @@
 from tkinter import messagebox
 from tkinter import *
+import password_generator
+import pyperclip
 
 # CONSTANTS
 DARK = "#383e56"
@@ -8,6 +10,13 @@ ORANGE = "#fb743e"
 
 # PASS WORD GENERATOR
 
+def generate_password():
+    gen_password = password_generator.random_password()
+    password_input.insert(0, gen_password)
+    pyperclip.copy(gen_password)
+    messagebox.showinfo(title="Password Generated!",
+                        message="Secure password generated and copy to clipboard for your use. ")
+
 
 # SAVE PASSWORD
 
@@ -15,13 +24,18 @@ def add():
     website_name = website_input.get()
     email = email_input.get()
     password = password_input.get()
-    with open("data.txt", "a") as data_file:
-        data_file.write(f"Website Name: {website_name} | E-mail: {email} | Password: {password}\n")
 
-    messagebox.showinfo(title="Password Added", message=f"Password for {website_name.upper()} added!")
+    if (len(website_name) == 0 or len(email) == 0 or len(password) == 0):
+        messagebox.showerror(title="Empty Space", message="You need to fill all boxes.")
+    else:
+        is_ok = messagebox.askokcancel(title=website_name,
+                                       message=f"Email: {email}\n Password: {password}\n Is it Okay to save?")
 
-    website_input.delete(0, "end")
-    password_input.delete(0, "end")
+        if (is_ok):
+            with open("data.txt", "a") as data_file:
+                data_file.write(f"Website Name: {website_name} | E-mail: {email} | Password: {password}\n")
+                website_input.delete(0, "end")
+                password_input.delete(0, "end")
 
 
 # UI SETUP
@@ -65,7 +79,7 @@ password_input = Entry(width=21)
 password_input.grid(row=3, column=1)
 
 # Buttons
-password_generate_button = Button(text="Generate Password", pady=4)
+password_generate_button = Button(text="Generate Password", pady=4, command=generate_password)
 password_generate_button.grid(row=3, column=2)
 
 add_button = Button(text="Add", width=36, pady=5, command=add)
