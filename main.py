@@ -2,6 +2,7 @@ from tkinter import messagebox
 from tkinter import *
 import password_generator
 import pyperclip
+import json
 
 # CONSTANTS
 DARK = "#383e56"
@@ -24,18 +25,27 @@ def add():
     website_name = website_input.get()
     email = email_input.get()
     password = password_input.get()
+    new_data = {website_name: {
+        "email": email,
+        "password": password,
+    }}
 
     if (len(website_name) == 0 or len(email) == 0 or len(password) == 0):
         messagebox.showerror(title="Empty Space", message="You need to fill all boxes.")
     else:
-        is_ok = messagebox.askokcancel(title=website_name,
-                                       message=f"Email: {email}\n Password: {password}\n Is it Okay to save?")
-
-        if (is_ok):
-            with open("data.txt", "a") as data_file:
-                data_file.write(f"Website Name: {website_name} | E-mail: {email} | Password: {password}\n")
-                website_input.delete(0, "end")
-                password_input.delete(0, "end")
+        try:
+            with open("data.json", "r") as data_file:
+                data = json.load(data_file)
+        except FileNotFoundError:
+            with open("data.json", "w") as data_file:
+                json.dump(new_data, data_file, indent=4)
+        else:
+            data.update(new_data)
+            with open("data.json", "w") as data_file:
+                json.dump(data, data_file, indent=4)
+        finally:
+            website_input.delete(0, "end")
+            password_input.delete(0, "end")
 
 
 # UI SETUP
